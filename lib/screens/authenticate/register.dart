@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dml/services/auth.dart';
 import 'package:flutter_dml/shared/constants.dart';
 import 'package:flutter_dml/shared/loading.dart';
-import 'package:passwordfield/passwordfield.dart';
 
 class Register extends StatefulWidget {
 
