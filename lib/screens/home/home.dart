@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dml/screens/authenticate/authenticate.dart';
 import 'package:flutter_dml/screens/authenticate/sign_in.dart';
-import 'package:flutter_dml/screens/home/list_view.dart';
+import 'package:flutter_dml/screens/home/staff_add.dart';
+import 'package:flutter_dml/screens/home/build_listview.dart';
 import 'package:flutter_dml/services/auth.dart';
 import 'package:flutter_dml/shared/loading.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Home extends StatefulWidget {
 
@@ -14,29 +17,27 @@ class _HomeState extends State<Home> {
 
   bool loading = false;
 
+  //the service method that created from auth file
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
-
-    final AuthService _auth = AuthService();
-
     return loading ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text('Staffs List'),
         backgroundColor: Colors.pink,
         actions: <Widget>[
-          FlatButton.icon(
-              onPressed: () async {
-                setState(() {
-                  loading = true;
-                });
-                dynamic result = await _auth.signOut();
-                if(result == null) {
-                  loading = false;
-                }
-              },
-              icon: Icon(Icons.person, color: Colors.white),
-              label: Text('Sign Out', style: TextStyle( color: Colors.white))
-          )
+          IconButton(
+            padding: EdgeInsets.only(right: 10.0),
+            icon: Icon(Icons.add, color: Colors.white,),
+            onPressed: () {
+              Navigator.push(context, PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: StaffAdd()
+                )
+              );
+            },
+          ),
         ],
       ),
       drawer: _buildDrawer(),
@@ -44,6 +45,7 @@ class _HomeState extends State<Home> {
     );
   }
 
+  //final AuthService _authService = AuthService();
   _buildDrawer() {
     return Drawer(
       // Add a ListView to the drawer. This ensures the user can scroll
@@ -54,20 +56,23 @@ class _HomeState extends State<Home> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Drawer Header'),
+            child: Text('Profile', style: TextStyle(color: Colors.white, fontSize: 20.0),),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.pink[400],
             ),
           ),
           ListTile(
-            title: Text('Sign Out'),
-            onTap: () {
+            leading: Icon(Icons.person),
+            title: Text('Sign Out', style: TextStyle(fontSize: 16.0),),
+            onTap: () async {
               // Update the state of the app.
-              // ...
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignIn()),
-              );
+              setState(() {
+                loading = true;
+              });
+              dynamic result = await _auth.signOut();
+              if(result == null) {
+                  loading = false;
+              }
             },
           ),
         ],
